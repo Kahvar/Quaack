@@ -6,7 +6,7 @@
 // run the game with player and camera parameters
 void GameRun(Camera3D *camera, Player *player) {
     
-    Vector3 cubePosition = { 0.0f, 0.0f, 0.0f };
+    Vector3 cubePosition = { 5.0f, 0.0f, 5.0f };
 
     while(!WindowShouldClose()) {
         float dt = GetFrameTime();
