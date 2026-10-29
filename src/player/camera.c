@@ -22,7 +22,7 @@ PlayerCamera InitCamera(void) { // initialize the camera with default values lat
 }
 
 // updating camera position with players position
-void UpdatePlayerCamera(PlayerCamera *camera, float dt, Player *player) {
+void UpdatePlayerCamera(PlayerCamera *camera, Player *player) {
     Vector2 mousePos = GetMouseDelta();
 
     camera->yaw += mousePos.x * camera->sensitivity; // left and right

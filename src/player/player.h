@@ -8,6 +8,11 @@ typedef struct Player
 {
     Vector3 position;
     Vector3 velocity;
+    bool OnGround;
+    float acceleration;
+    float airAcceleration;
+    float wishSpeed;
+    float jumpForce;
 } Player;
 
 Player InitPlayer();

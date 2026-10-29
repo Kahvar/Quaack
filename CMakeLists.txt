@@ -9,9 +9,11 @@ add_executable(${PROJECT_NAME}
     src/main.c
     src/core/init.c
     src/core/game.c
+    src/core/input.c
     src/player/camera.c
     src/rendering/renderer.c
     src/player/player.c
+    src/player/movement.c
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE

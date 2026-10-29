@@ -13,7 +13,7 @@ typedef struct Camera {
 
 PlayerCamera InitCamera(void); // return type my PlayerCamera struct
 
-void UpdatePlayerCamera(PlayerCamera *camera, float dt, Player *player); // update the camera with the Camera3D from initcamera
+void UpdatePlayerCamera(PlayerCamera *camera, Player *player); // update the camera with PlayerCamera struct
 
 
 #endif
