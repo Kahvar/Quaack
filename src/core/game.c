@@ -15,7 +15,7 @@ void GameRun(PlayerCamera *camera, Player *player) {
 
         Vector3 wishDir = GetWishDir(input, camera->yaw);
 
-        UpdateMovement(player, wishDir, dt);
+        UpdateMovement(player, input, wishDir, dt);
 
         BeginDrawing();
             ClearBackground(RAYWHITE);
@@ -30,6 +30,7 @@ void GameRun(PlayerCamera *camera, Player *player) {
                 
             EndMode3D();
 
+            DrawText(TextFormat("Player position: x: %.2f y: %.2f z: %.2f", player->position.x, player->position.y, player->position.z), 10, 30, 30, RED);
             DrawFPS(10, 10);
 
         EndDrawing();

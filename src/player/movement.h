@@ -7,10 +7,19 @@
 #include <raymath.h>
 
 Vector3 GetWishDir(PlayerInput input, float yaw);
-void UpdateMovement(Player *player, Vector3 wishDir, float dt);
+
+void UpdateMovement(Player *player, PlayerInput input,Vector3 wishDir, float dt);
+
+void Gravity(Player *player, float dt);
+
+void Friction(Player *player, PlayerInput input, float dt);
+
 void GroundMovement(Player *player, Vector3 wishDir, float dt);
+
 void AirMovement(Player *player, Vector3 wishDir, float dt);
+
 void GroundCheck(Player *player);
+
 void Jump(Player *player, PlayerInput input, float dt);
 
 #endif

@@ -1,4 +1,5 @@
 #include <movement.h>
+#include <stdlib.h>
 
 //get wish dir with camera yaw and inputs
 Vector3 GetWishDir(PlayerInput input, float yaw) {
@@ -31,8 +32,10 @@ Vector3 GetWishDir(PlayerInput input, float yaw) {
     return Vector3Normalize(wishDir);
 }
 
-void UpdateMovement(Player *player, Vector3 wishDir, float dt) {
+void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt) {
+    Gravity(player, dt);
     GroundCheck(player);
+    Friction(player, input ,dt);
 
     if (player->OnGround) {
         GroundMovement(player, wishDir, dt);
@@ -76,7 +79,31 @@ void AirMovement(Player *player, Vector3 wishDir, float dt) {
 
 //simple groundcheck !!!fix later
 void GroundCheck(Player *player) {
-    if (player->position.y == 0) { player->OnGround = true; } else { player->OnGround = false; }
+    if (player->position.y <= 0) { player->OnGround = true;
+                                    //snap the player back and prevemt velocity growing when on ground
+                                    player->position.y = 0;
+                                    player->velocity.y = 0;
+     } else { player->OnGround = false; }
 }
 
-//implement gravity and jump next
+void Gravity(Player *player, float dt) {
+    if(!player->OnGround) {
+        player->velocity.y += player->gravity * dt;
+    }
+}
+
+void Friction(Player *player, PlayerInput input, float dt) {
+    if (player->OnGround) {
+        // implement a way to check input better than this..
+        if (!input.forward && !input.backward &&
+            !input.left && !input.right) {
+                // calculate the friction by dt
+                float frictionAmount = player->friction * dt;
+                float remaining = 1.0f - frictionAmount;
+
+                player->velocity = Vector3Scale(player->velocity, remaining);
+            }
+    }
+}
+
+//implement jump next and fix the acceleration its shit rn

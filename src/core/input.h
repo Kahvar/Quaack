@@ -14,5 +14,4 @@ typedef struct PlayerInput {
 
 PlayerInput CheckKeys();
 
-
 #endif
