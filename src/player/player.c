@@ -7,8 +7,9 @@ Player InitPlayer() {
     player.airAcceleration = 7.0f;
     player.wishSpeed = 7.0f;
     player.jumpForce = 8.0f;
-    player.gravity = -5.0f;
+    player.gravity = -9.8f;
     player.friction = 8.0f;
-    player.jumpForce = 250.0;
+    player.jumpForce = 4.0f;
+    player.maxGroundSpeed = 9.0f;
     return player;
 }

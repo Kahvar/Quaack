@@ -48,8 +48,8 @@ void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt
     }
     
     //calc speed
-    player->speed = sqrt(player->velocity.x * player->velocity.x) +
-                        (player->velocity.z * player->velocity.z);
+    player->speed = sqrt((player->velocity.x * player->velocity.x) +
+                        (player->velocity.z * player->velocity.z));
 
 
     player->position.x += player->velocity.x * dt;
@@ -58,9 +58,25 @@ void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt
 }
 
 void GroundMovement(Player *player, Vector3 wishDir, float dt) {
-    // acceleration by wishdir
-    player->velocity.x += wishDir.x * player->acceleration * dt;
-    player->velocity.z += wishDir.z * player->acceleration * dt;
+    float currentspeed = Vector3DotProduct(player->velocity, wishDir);
+
+    // how much more speed the player can add before the cap is reached
+    float remainingSpeed = player->maxGroundSpeed - currentspeed;
+
+    // if the cap is reached return
+    if (remainingSpeed <= 0) {
+        return;
+    }
+
+    // calculate this frames acceleration
+    float speedToAddThisFrame = player->acceleration * player->maxGroundSpeed * dt;
+    if (speedToAddThisFrame > remainingSpeed) {
+        speedToAddThisFrame = remainingSpeed;
+    }
+
+
+    player->velocity.x += speedToAddThisFrame * wishDir.x;
+    player->velocity.z += speedToAddThisFrame * wishDir.z;
 }
 
 void AirMovement(Player *player, Vector3 wishDir, float dt) {
@@ -105,23 +121,24 @@ void Gravity(Player *player, float dt) {
 
 void Friction(Player *player, PlayerInput input, float dt) {
     if (player->OnGround) {
-        // implement a way to check input better than this..
-        if (!input.forward && !input.backward &&
-            !input.left && !input.right) {
-                // calculate the friction by dt
-                float frictionAmount = player->friction * dt;
-                float remaining = 1.0f - frictionAmount;
+        // calculate the friction by dt
+        float frictionAmount = player->friction * dt;
+        float remaining = 1.0f - frictionAmount;
 
-                player->velocity = Vector3Scale(player->velocity, remaining);
-            }
+        // snap it back if it goes to - so the player isnt thrown backwards
+        if (remaining < 0.0f) remaining = 0.0f;
+    
+        player->velocity.x *= remaining;
+        player->velocity.z *= remaining;
     }
 }
+
 
 
 void Jump(Player *player, float dt) {
     if(player->canJump) {
-        player->velocity.y += player->jumpForce * dt;
+        player->velocity.y += player->jumpForce;
     }
 }
 
-//FIX THE ACCELERATION ITS SHIT AND DOESNT CAP AND MAKE THE JUMP SNAPPY AND GET BETTER
+//
