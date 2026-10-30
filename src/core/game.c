@@ -30,7 +30,8 @@ void GameRun(PlayerCamera *camera, Player *player) {
                 
             EndMode3D();
 
-            DrawText(TextFormat("Player position: x: %.2f y: %.2f z: %.2f", player->position.x, player->position.y, player->position.z), 10, 30, 30, RED);
+            DrawText(TextFormat("Player position: x: %.2f y: %.2f z: %.2f", player->position.x, player->position.y, player->position.z), 10, 30, 20, RED);
+            DrawText(TextFormat("Player speed: %.2f", player->speed), 10, 50, 20, RED);
             DrawFPS(10, 10);
 
         EndDrawing();

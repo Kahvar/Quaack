@@ -15,6 +15,8 @@ typedef struct Player
     float jumpForce;
     float gravity;
     float friction;
+    float speed;
+    bool canJump;
 } Player;
 
 Player InitPlayer();

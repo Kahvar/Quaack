@@ -20,6 +20,6 @@ void AirMovement(Player *player, Vector3 wishDir, float dt);
 
 void GroundCheck(Player *player);
 
-void Jump(Player *player, PlayerInput input, float dt);
+void Jump(Player *player, float dt);
 
 #endif

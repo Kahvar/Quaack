@@ -37,12 +37,21 @@ void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt
     GroundCheck(player);
     Friction(player, input ,dt);
 
+    if (input.jump) {
+        Jump(player, dt);
+    }
+
     if (player->OnGround) {
         GroundMovement(player, wishDir, dt);
     } else {
         AirMovement(player, wishDir, dt);
     }
     
+    //calc speed
+    player->speed = sqrt(player->velocity.x * player->velocity.x) +
+                        (player->velocity.z * player->velocity.z);
+
+
     player->position.x += player->velocity.x * dt;
     player->position.y += player->velocity.y * dt;
     player->position.z += player->velocity.z * dt;
@@ -80,10 +89,12 @@ void AirMovement(Player *player, Vector3 wishDir, float dt) {
 //simple groundcheck !!!fix later
 void GroundCheck(Player *player) {
     if (player->position.y <= 0) { player->OnGround = true;
+                                    player->canJump = true;
                                     //snap the player back and prevemt velocity growing when on ground
                                     player->position.y = 0;
                                     player->velocity.y = 0;
-     } else { player->OnGround = false; }
+     } else { player->OnGround = false;
+            player->canJump = false; }
 }
 
 void Gravity(Player *player, float dt) {
@@ -106,4 +117,11 @@ void Friction(Player *player, PlayerInput input, float dt) {
     }
 }
 
-//implement jump next and fix the acceleration its shit rn
+
+void Jump(Player *player, float dt) {
+    if(player->canJump) {
+        player->velocity.y += player->jumpForce * dt;
+    }
+}
+
+//FIX THE ACCELERATION ITS SHIT AND DOESNT CAP AND MAKE THE JUMP SNAPPY AND GET BETTER
