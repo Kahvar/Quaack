@@ -1,5 +1,4 @@
 #include <movement.h>
-#include <stdlib.h>
 
 //get wish dir with camera yaw and inputs
 Vector3 GetWishDir(PlayerInput input, float yaw) {
