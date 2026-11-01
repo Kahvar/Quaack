@@ -1,33 +1,36 @@
-#include <map.h>
 #include <stdio.h>
+#include <stdbool.h>
+#include "map_loader.h"
+#include "map.h"
 
-int main(void)
-{
-    Map map = MapInit();
 
-    printf("Initial count: %zu\n", map.count);
-    printf("Initial capacity: %zu\n", map.capacity);
-
-    for (int i = 0; i < 20; i++) {
-        MapObject object = {
-            .position = { i * 2.0f, 0.0f, 0.0f },
-            .size = { 2.0f, 2.0f, 2.0f }
-        };
-
-        if (!MapAddObject(&map, object)) {
-            printf("Failed to add object %d\n", i);
-            return 1;
-        }
+// a tester made with claude
+int main(int argc, char *argv[]) {
+    if (argc != 2) {
+        printf("Usage: %s <map file>\n", argv[0]);
+        return 1;
     }
 
-    printf("Count: %zu\n", map.count);
-    printf("Capacity: %zu\n", map.capacity);
+    Map map = MapInit();
 
-    MapFree(&map);
+    if (!MapLoader(argv[1], &map)) {
+        printf("Failed to load map: %s\n", argv[1]);
+        MapFree(&map);
+        return 1;
+    }
 
-    printf("Objects: %p\n", (void *)map.objects);
-    printf("Count: %zu\n", map.count);
-    printf("Capacity: %zu\n", map.capacity);
+    printf("Map loaded: %s (%zu objects)\n", argv[1], map.count);
 
+    for (size_t i = 0; i < map.count; i++) {
+        MapObject *o = &map.objects[i];
+        printf("[%zu] pos(%.1f, %.1f, %.1f) size(%.1f, %.1f, %.1f)\n",
+               i, o->position.x, o->position.y, o->position.z,
+               o->size.x, o->size.y, o->size.z);
+    }
+
+    if (!MapFree(&map)) {
+        printf("MapFree failed\n");
+        return 1;
+    }
     return 0;
 }

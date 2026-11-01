@@ -13,12 +13,12 @@ Map MapInit(void) {
 
      // if the memory allocation fails return a empty map
      if (map.objects == NULL) {
-          printf("Memory allocation failed at malloc.");
+          printf("Memory allocation failed at malloc.\n");
           map = (Map){0};
           return map;
      }
 
-     // return the 16 byte map
+     // return the 16 object size map
      return map;
 }
 
@@ -26,10 +26,10 @@ Map MapInit(void) {
 // add objects to the map and handle realloc
 bool MapAddObject(Map *map, MapObject object) {
      if (map == NULL) { // if the map struct is null
-          printf("Map = null?");
+          printf("Map = null?\n");
           return false;
      } else if (map->count > map->capacity) { // if the count is bigger than capacity
-          printf("Object count is bigger what the memory can hold.");
+          printf("Object count is bigger what the memory can hold.\n");
           return false;
      } else if (map->objects == NULL && map->capacity > 0) { // if the objects are null while capacity is more
           printf("Maps memory is NULL while the capacity is %zu!\n", sizeof(map->capacity));
@@ -42,9 +42,11 @@ bool MapAddObject(Map *map, MapObject object) {
           MapObject *temp = realloc(map->objects, map->capacity * 2 * sizeof(MapObject));
 
           if (temp == NULL) {
-               printf("Memory realloc failed at realloc.");
+               printf("Memory realloc failed at realloc.\n");
                return false;
           }
+          printf("Realloc working!!\n");
+
           // assign the realloc to objects
           map->objects = temp;
 
@@ -57,13 +59,13 @@ bool MapAddObject(Map *map, MapObject object) {
      }
      
      // final path just returns false
-     printf("Well this is weird");
+     printf("Well this is weird\n");
      return false;
 }
 
 bool MapFree(Map *map) {
      if (map == NULL) {
-          printf("Cannot free memory from NULL");
+          printf("Cannot free memory from NULL\n");
           return false;
      } else {
           // free the memory and put everything back

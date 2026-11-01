@@ -1,11 +1,9 @@
 #ifndef MAP_LOADER
 #define MAP_LOADER
 
-#include <stdio.h>
+#include <stdbool.h>
+#include <map.h>
 
-void init_file();
-
-void map_loader(FILE *file);
-
+bool MapLoader(const char *filename, Map *map);
 
 #endif
