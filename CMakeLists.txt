@@ -12,7 +12,7 @@ add_executable(${PROJECT_NAME}
     src/core/input.c
     src/player/camera.c
     src/player/player.c
-    src/player/movement.c
+    src/physics/movement.c
     src/map/map.c
     src/map/map_loader.c
     src/rendering/renderer.c
@@ -23,6 +23,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     src
     src/core
     src/rendering
+    src/physics
     src/player
     src/map
 )
@@ -30,6 +31,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
 target_link_directories(${PROJECT_NAME} PRIVATE
     /usr/local/lib
     src/core
+    src/physics
     src/rendering
     src/player
     src/map

@@ -3,7 +3,7 @@
 #include <game.h>
 #include <raylib.h>
 #include <input.h>
-#include <player/movement.h>
+#include <physics/movement.h>
 #include <map/map.h>
 #include <map/map_loader.h>
 #include <rendering/renderer.h>
@@ -12,7 +12,7 @@
 void GameRun(PlayerCamera *camera, Player *player) {
     
     // get the map location
-    char name[50] = "src/core/test.map";
+    char name[50] = "src/assets/test.map";
     // init the map
     Map map = MapInit();
 
