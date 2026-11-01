@@ -1,12 +1,29 @@
+#include <stdbool.h>
+#include <stdio.h>
 #include <game.h>
 #include <raylib.h>
 #include <input.h>
 #include <player/movement.h>
+#include <map/map.h>
+#include <map/map_loader.h>
+#include <rendering/renderer.h>
 
 // run the game with player and camera parameters
 void GameRun(PlayerCamera *camera, Player *player) {
     
-    Vector3 cubePosition = { 5.0f, 0.0f, 5.0f };
+    // get the map location
+    char name[50] = "src/core/test.map";
+    // init the map
+    Map map = MapInit();
+
+    // if the map loader returns false
+    if (!MapLoader(name, &map)) {
+        printf("loading file failed: %s\n", name);
+        MapFree(&map);
+        return;
+    }
+
+    printf("map loaded: %s (%zu objects)\n", name, map.count);
 
     while(!WindowShouldClose()) {
         float dt = GetFrameTime();
@@ -24,7 +41,7 @@ void GameRun(PlayerCamera *camera, Player *player) {
             UpdatePlayerCamera(camera, player);
 
             BeginMode3D(camera->raylib_camera);
-                DrawCube(cubePosition, 2.0f, 2.0f, 2.0f, RED);
+                Renderer(&map);
 
                 DrawGrid(10, 1.0f);
                 
@@ -35,6 +52,11 @@ void GameRun(PlayerCamera *camera, Player *player) {
             DrawFPS(10, 10);
 
         EndDrawing();
+    }
+
+    if (!MapFree(&map)) {
+        printf("MapFree failed\n");
+        return;
     }
 
     GameClose();

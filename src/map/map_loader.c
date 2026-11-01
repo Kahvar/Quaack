@@ -27,17 +27,13 @@ bool MapLoader(const char *filename, Map *map) {
             printf("wrong line format: %s\n", buffer);
             fclose(fptr);
             return false;
-        } else {
-            printf("Line read succesfully\n");
-        }
+        } 
         
         // send the temp_obj to the MapAddObject
         if(MapAddObject(map, temp_obj) == false) {
             printf("MapAddObject failed to add the object\n");
             fclose(fptr);
             return false;
-        } else {
-            printf("object added succesfully\n");
         }
     }
 

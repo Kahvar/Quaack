@@ -103,10 +103,10 @@ void AirMovement(Player *player, Vector3 wishDir, float dt) {
 
 //simple groundcheck !!!fix later
 void GroundCheck(Player *player) {
-    if (player->position.y <= 0) { player->OnGround = true;
+    if (player->position.y <= 1) { player->OnGround = true;
                                     player->canJump = true;
                                     //snap the player back and prevemt velocity growing when on ground
-                                    player->position.y = 0;
+                                    player->position.y = 1;
                                     player->velocity.y = 0;
      } else { player->OnGround = false;
             player->canJump = false; }

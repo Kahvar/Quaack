@@ -11,9 +11,12 @@ add_executable(${PROJECT_NAME}
     src/core/game.c
     src/core/input.c
     src/player/camera.c
-    src/rendering/renderer.c
     src/player/player.c
     src/player/movement.c
+    src/map/map.c
+    src/map/map_loader.c
+    src/rendering/renderer.c
+    
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -21,6 +24,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     src/core
     src/rendering
     src/player
+    src/map
 )
 
 target_link_directories(${PROJECT_NAME} PRIVATE
@@ -28,6 +32,7 @@ target_link_directories(${PROJECT_NAME} PRIVATE
     src/core
     src/rendering
     src/player
+    src/map
 )
 
 target_link_libraries(${PROJECT_NAME} PRIVATE
