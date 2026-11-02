@@ -1,6 +1,7 @@
 #include <movement.h>
+#include <collision.h>
 
-void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt) {
+void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt, Map *map) {
     GroundCheck(player);
     Gravity(player, dt);
 
@@ -23,9 +24,17 @@ void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt
                         (player->velocity.z * player->velocity.z));
 
 
-    player->position.x += player->velocity.x * dt;
-    player->position.y += player->velocity.y * dt;
-    player->position.z += player->velocity.z * dt;
+    Vector3 newPosition = {
+        player->position.x + player->velocity.x * dt,
+        player->position.y + player->velocity.y * dt,
+        player->position.z + player->velocity.z * dt
+    };
+
+    if(CheckNearby(player, map, newPosition)) {
+
+    } else {
+        player->position = newPosition;
+    }
 }
 
 //get wish dir with camera yaw and inputs
@@ -115,6 +124,14 @@ void GroundCheck(Player *player) {
                                     player->velocity.y = 0;
      } else { player->OnGround = false;
             player->canJump = false; }
+    /*struct Raycast; {
+        int rays = 1;
+        Vector3 origin = player->position;
+        Vector3 direction = {0.0, -1.0, 0.0};
+    }
+
+    if () {}*/
+
 }
 
 void Gravity(Player *player, float dt) {

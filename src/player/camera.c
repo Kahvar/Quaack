@@ -37,7 +37,7 @@ void UpdatePlayerCamera(PlayerCamera *camera, Player *player) {
 
     Vector3 newTarget = {dx, dy, dz}; // calculate the camera facing from yaw and pitch
 
-    camera->raylib_camera.position = player->position;  // snap the camera to players pos
+    camera->raylib_camera.position = (Vector3){player->position.x, player->position.y + player->eyeHeight, player->position.z};  // snap the camera to players pos
 
     camera->raylib_camera.target = Vector3Add(newTarget, camera->raylib_camera.position); // calculate target point one unit infront of the cam
 }

@@ -32,7 +32,7 @@ void GameRun(PlayerCamera *camera, Player *player) {
 
         Vector3 wishDir = GetWishDir(input, camera->yaw);
 
-        UpdateMovement(player, input, wishDir, dt);
+        UpdateMovement(player, input, wishDir, dt, &map);
 
         BeginDrawing();
             ClearBackground(RAYWHITE);

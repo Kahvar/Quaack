@@ -1,14 +1,15 @@
 #ifndef MOVEMENT_H
 #define MOVEMENT_H
 
-#include <player.h>
+#include <player/player.h>
 #include <core/input.h>
+#include <map/map.h>
 #include <raylib.h>
 #include <raymath.h>
 
 Vector3 GetWishDir(PlayerInput input, float yaw);
 
-void UpdateMovement(Player *player, PlayerInput input,Vector3 wishDir, float dt);
+void UpdateMovement(Player *player, PlayerInput input,Vector3 wishDir, float dt, Map *map);
 
 void Gravity(Player *player, float dt);
 

@@ -5,6 +5,13 @@ project(Game LANGUAGES C)
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
+
+if(WIN32)
+    set(RAYLIB_DIR "C:/raylib/raylib")
+endif()
+
+
+
 add_executable(${PROJECT_NAME}
     src/main.c
     src/core/init.c
@@ -13,6 +20,7 @@ add_executable(${PROJECT_NAME}
     src/player/camera.c
     src/player/player.c
     src/physics/movement.c
+    src/physics/collision.c
     src/map/map.c
     src/map/map_loader.c
     src/rendering/renderer.c
@@ -28,20 +36,26 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     src/map
 )
 
-target_link_directories(${PROJECT_NAME} PRIVATE
-    /usr/local/lib
-    src/core
-    src/physics
-    src/rendering
-    src/player
-    src/map
-)
 
-target_link_libraries(${PROJECT_NAME} PRIVATE
+if(WIN32)
+    target_include_directories(${PROJECT_NAME} PRIVATE "${RAYLIB_DIR}/src")
+    target_link_directories(${PROJECT_NAME} PRIVATE "${RAYLIB_DIR}/src")
+
+    target_link_libraries(${PROJECT_NAME} PRIVATE
     raylib
-    m
-    pthread
-    dl
-    rt
-    X11
-)
+    winmm
+    gdi32
+    opengl32
+    )
+else()
+    target_link_directories(${PROJECT_NAME} PRIVATE /usr/local/lib)
+
+    target_link_libraries(${PROJECT_NAME} PRIVATE
+        raylib
+        m
+        pthread
+        dl
+        rt
+        X11
+    )
+endif()

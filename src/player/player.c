@@ -3,6 +3,8 @@
 Player InitPlayer() {
     Player player = {0}; // later init the player position to the maps start point
     player.position.y = 10.0f;
+    player.playerSize = (Vector3){1.0f, 3.0f, 1.0f};
+    player.eyeHeight = 2.0f;
     player.acceleration = 8.0f;
     player.airAcceleration = 10.0f;
     player.wishSpeed = 9.0f;

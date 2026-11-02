@@ -4,10 +4,11 @@
 #include <raylib.h>
 
 //typedef lets me use Player directly without writing struct every time
-typedef struct Player
-{
+typedef struct {
     Vector3 position;
+    Vector3 playerSize;
     Vector3 velocity;
+    float eyeHeight;
     bool OnGround;
     float acceleration;
     float airAcceleration;
