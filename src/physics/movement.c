@@ -125,15 +125,28 @@ void Gravity(Player *player, float dt) {
 
 void Friction(Player *player, PlayerInput input, float dt) {
     if (player->OnGround) {
-        // calculate the friction by dt
-        float frictionAmount = player->friction * dt;
-        float remaining = 1.0f - frictionAmount;
+        //get the current speed
+        float speed = sqrtf(player->velocity.x * player->velocity.x + player->velocity.z * player->velocity.z);
+
+        if (speed < 0.001f) {
+            player->velocity.x = 0.0f;
+            player->velocity.z = 0.0f;
+            return;
+        }
+
+        float controlSpeed = fmaxf(speed, player->stopSpeed);
+
+        // calculate the friction by dt and control speed
+        float frictionAmount = controlSpeed * player->friction * dt;
+
+        float remaining = speed - frictionAmount;
 
         // snap it back if it goes to - so the player isnt thrown backwards
         if (remaining < 0.0f) remaining = 0.0f;
-    
-        player->velocity.x *= remaining;
-        player->velocity.z *= remaining;
+
+        float scale = remaining / speed;
+        player->velocity.x *= scale;
+        player->velocity.z *= scale;
     }
 }
 

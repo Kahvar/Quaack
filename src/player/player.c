@@ -8,7 +8,8 @@ Player InitPlayer() {
     player.wishSpeed = 9.0f;
     player.wishSpeedLimit = 0.85f;
     player.gravity = -22.0f;
-    player.friction = 5.0f;
+    player.friction = 6.0f;
+    player.stopSpeed = 1.0f;
     player.jumpForce = 7.5f;
     player.maxGroundSpeed = 9.0f;
     return player;

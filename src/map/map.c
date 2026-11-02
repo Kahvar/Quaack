@@ -6,7 +6,7 @@
 // init map to 0
 Map MapInit(void) {
      Map map = { 0 };
-     map.capacity = 16;
+     map.capacity = 4;
 
      // malloc the 16 MapObject capacity first
      map.objects = malloc(map.capacity * sizeof(MapObject));
@@ -72,7 +72,7 @@ bool MapFree(Map *map) {
           free(map->objects);
           map->objects = NULL;
           map->count = 0;
-          map->capacity = 0;
+          map->capacity = 4;
           return true;
      }
 }

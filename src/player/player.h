@@ -16,6 +16,7 @@ typedef struct Player
     float jumpForce;
     float gravity;
     float friction;
+    float stopSpeed;
     float speed;
     bool canJump;
     float maxGroundSpeed;
