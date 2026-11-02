@@ -12,6 +12,7 @@ typedef struct Player
     float acceleration;
     float airAcceleration;
     float wishSpeed;
+    float wishSpeedLimit;
     float jumpForce;
     float gravity;
     float friction;

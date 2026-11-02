@@ -15,7 +15,7 @@ PlayerCamera InitCamera(void) { // initialize the camera with default values lat
     camera.raylib_camera.projection = CAMERA_PERSPECTIVE;             // Camera mode type
     camera.yaw = 0.0f;
     camera.pitch = 0.0f;
-    camera.sensitivity = 0.01f;
+    camera.sensitivity = 0.005f;
 
 
     return camera; // return the 3d camera

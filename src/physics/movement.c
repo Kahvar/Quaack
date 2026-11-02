@@ -1,5 +1,33 @@
 #include <movement.h>
 
+void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt) {
+    GroundCheck(player);
+    Gravity(player, dt);
+
+    // friction after jump
+    if (input.jump) {
+        Jump(player, dt);
+    }
+
+    Friction(player, input ,dt);
+
+
+    if (player->OnGround) {
+        GroundMovement(player, wishDir, dt);
+    } else {
+        AirMovement(player, wishDir, dt);
+    }
+    
+    //calc speed
+    player->speed = sqrt((player->velocity.x * player->velocity.x) +
+                        (player->velocity.z * player->velocity.z));
+
+
+    player->position.x += player->velocity.x * dt;
+    player->position.y += player->velocity.y * dt;
+    player->position.z += player->velocity.z * dt;
+}
+
 //get wish dir with camera yaw and inputs
 Vector3 GetWishDir(PlayerInput input, float yaw) {
     Vector3 wishDir = { 0.0f };
@@ -31,31 +59,6 @@ Vector3 GetWishDir(PlayerInput input, float yaw) {
     return Vector3Normalize(wishDir);
 }
 
-void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt) {
-    Gravity(player, dt);
-    GroundCheck(player);
-    Friction(player, input ,dt);
-
-    if (input.jump) {
-        Jump(player, dt);
-    }
-
-    if (player->OnGround) {
-        GroundMovement(player, wishDir, dt);
-    } else {
-        AirMovement(player, wishDir, dt);
-    }
-    
-    //calc speed
-    player->speed = sqrt((player->velocity.x * player->velocity.x) +
-                        (player->velocity.z * player->velocity.z));
-
-
-    player->position.x += player->velocity.x * dt;
-    player->position.y += player->velocity.y * dt;
-    player->position.z += player->velocity.z * dt;
-}
-
 void GroundMovement(Player *player, Vector3 wishDir, float dt) {
     float currentspeed = Vector3DotProduct(player->velocity, wishDir);
 
@@ -82,8 +85,10 @@ void AirMovement(Player *player, Vector3 wishDir, float dt) {
 
     float currentspeed = Vector3DotProduct(player->velocity, wishDir);
 
+    float cappedWishSpeed = Clamp(player->wishSpeed, 0.0f, player->wishSpeedLimit);
+
     // how much more speed the player can add before the cap is reached
-    float remainingSpeed = player->wishSpeed - currentspeed;
+    float remainingSpeed = cappedWishSpeed - currentspeed;
 
     // if the cap is reached return
     if (remainingSpeed <= 0) {
@@ -136,7 +141,8 @@ void Friction(Player *player, PlayerInput input, float dt) {
 
 void Jump(Player *player, float dt) {
     if(player->canJump) {
-        player->velocity.y += player->jumpForce;
+        player->velocity.y = player->jumpForce;
+        player->OnGround = false;
     }
 }
 
