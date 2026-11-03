@@ -6,9 +6,20 @@
 #include <map/map.h>
 #include <stdbool.h>
 
-bool CheckNearby(Player *player, Map *map, Vector3 new_pos);
+typedef struct CollisionResult {
+    bool hit;
+    bool landed;
+    bool grounded;
+    float groundHeight;
+    Vector3 normal;
+    float distance;
+} CollisionResult;
 
-bool CheckAABB(Player *player, MapObject *object, Vector3 new_pos);
+
+
+CollisionResult CheckNearby(Player *player, Map *map, Vector3 new_pos);
+
+CollisionResult CheckAABB(Player *player, MapObject *object, Vector3 new_pos);
 
 
 #endif

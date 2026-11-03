@@ -19,7 +19,7 @@ void GroundMovement(Player *player, Vector3 wishDir, float dt);
 
 void AirMovement(Player *player, Vector3 wishDir, float dt);
 
-void GroundCheck(Player *player);
+bool GroundCheck(Player *player);
 
 void Jump(Player *player, float dt);
 

@@ -1,15 +1,29 @@
 #include <movement.h>
 #include <collision.h>
+#include <stdio.h>
 
 void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt, Map *map) {
-    GroundCheck(player);
+    bool onFloor = GroundCheck(player);
+    bool onBox = CheckNearby(player, map, player->position).grounded;
+
+    // better groundcheck and groundcheck checks worlds floor
+    if (onBox || onFloor){
+        player->velocity.y = 0.0f;
+        player->OnGround = true;
+        player->canJump = true;
+    } else {
+        player->OnGround = false;
+        player->canJump = false;
+    }
+    
+    
     Gravity(player, dt);
 
-    // friction after jump
     if (input.jump) {
         Jump(player, dt);
     }
 
+    // friction after jump
     Friction(player, input ,dt);
 
 
@@ -24,17 +38,43 @@ void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt
                         (player->velocity.z * player->velocity.z));
 
 
-    Vector3 newPosition = {
-        player->position.x + player->velocity.x * dt,
-        player->position.y + player->velocity.y * dt,
-        player->position.z + player->velocity.z * dt
+    Vector3 newPosition = player->position;
+    newPosition.y += player->velocity.y * dt;
+    newPosition.x += player->velocity.x * dt;
+    newPosition.z += player->velocity.z * dt;
+
+    CollisionResult result = CheckNearby(player, map, newPosition);
+    
+
+    if (result.landed) { // landing on top
+        player->velocity.y = 0.0f;
+        player->position.y = result.groundHeight;
+        player->OnGround = true;
+    }
+    else if (result.hit && result.normal.y < 0) { // Hit the underside
+        player->velocity.y = 0.0f;
+    } else { // no collision
+        player->position.y = newPosition.y;
+    }
+
+    Vector3 test_pos = {newPosition.x, player->position.y, player->position.z};
+    result = CheckNearby(player, map, test_pos);
+    //printf("X hit: %d | OnGround: %d\n", result.hit, player->OnGround);
+    if (!result.hit || !result.normal.x) {
+        player->position.x = test_pos.x;
+    } else {
+        player->velocity.x = 0.0f;
+    }
+
+    test_pos = (Vector3){player->position.x, player->position.y, newPosition.z};
+    result = CheckNearby(player, map, test_pos);
+    //printf("Z hit: %d | OnGround: %d\n", result.hit, player->OnGround);
+    if (!result.hit || !result.normal.z) {
+        player->position.z = test_pos.z;
+    } else {
+        player->velocity.z = 0.0f;
     };
 
-    if(CheckNearby(player, map, newPosition)) {
-
-    } else {
-        player->position = newPosition;
-    }
 }
 
 //get wish dir with camera yaw and inputs
@@ -116,22 +156,16 @@ void AirMovement(Player *player, Vector3 wishDir, float dt) {
 }
 
 //simple groundcheck !!!fix later
-void GroundCheck(Player *player) {
+bool GroundCheck(Player *player) {
     if (player->position.y <= 1) { player->OnGround = true;
                                     player->canJump = true;
                                     //snap the player back and prevemt velocity growing when on ground
                                     player->position.y = 1;
                                     player->velocity.y = 0;
+                                    return true;
      } else { player->OnGround = false;
-            player->canJump = false; }
-    /*struct Raycast; {
-        int rays = 1;
-        Vector3 origin = player->position;
-        Vector3 direction = {0.0, -1.0, 0.0};
-    }
-
-    if () {}*/
-
+            player->canJump = false; 
+            return false;}
 }
 
 void Gravity(Player *player, float dt) {
@@ -171,8 +205,8 @@ void Friction(Player *player, PlayerInput input, float dt) {
 
 void Jump(Player *player, float dt) {
     if(player->canJump) {
-        player->velocity.y = player->jumpForce;
         player->OnGround = false;
+        player->velocity.y = player->jumpForce;
     }
 }
 
