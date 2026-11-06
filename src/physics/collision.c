@@ -12,6 +12,7 @@ CollisionResult CheckNearby(Player *player, Map *map, Vector3 new_pos) {
 
         // if the player hits a box or is grounded
         if (result.hit || result.grounded) {
+            printf("Collision with object: %zu\n", i);
             return result;
         }
 
@@ -51,28 +52,29 @@ CollisionResult CheckAABB(Player *player, MapObject *object, Vector3 new_pos) {
         float overlapY = fminf(p_maxY, b_maxY) - fmaxf(p_minY, b_minY);
         float overlapZ = fminf(p_maxZ, b_maxZ) - fmaxf(p_minZ, b_minZ);
 
-        printf("Overlap X: %.3f | Y: %.3f | Z: %.3f\n", overlapX, overlapY, overlapZ);
+        //printf("Overlap X: %.3f | Y: %.3f | Z: %.3f\n", overlapX, overlapY, overlapZ);
 
+        int smallest = 0; // X
+
+        if(overlapY < overlapX) {
+            smallest = 1; // Y
+        } 
+
+        if((smallest  == 0 && overlapZ < overlapX) ||
+        (smallest == 1 && overlapZ < overlapY)) {
+            smallest = 2; // Z only assign smallest to 2 if its really smaller than both
+        }
+
+        printf("Selected axis: %d\n", smallest);
+        
         // x collision
-        if(overlapX < overlapY && overlapX < overlapZ) {
+        if(smallest == 0) {
             if (new_pos.x > object->position.x) {
                 result.normal = (Vector3){1, 0, 0};
             } else {
                 result.normal = (Vector3){-1, 0, 0};
             }
-        } 
-
-        // z collision
-        if(overlapZ < overlapY && overlapZ < overlapX) {
-            if (new_pos.z > object->position.z) {
-                result.normal = (Vector3){0, 0, 1};
-            } else {
-                result.normal = (Vector3){0, 0, -1};
-            }
-        } 
-
-        // y collision
-        if(overlapY < overlapX && overlapY < overlapZ) {
+        } else if (smallest == 1) { // Y collision
             // player is landing on top of a box
             if (player->position.y > result.groundHeight && new_pos.y <= result.groundHeight && player->velocity.y < 0){
                 result.landed = true;
@@ -82,9 +84,15 @@ CollisionResult CheckAABB(Player *player, MapObject *object, Vector3 new_pos) {
             } else {
             result.normal = (Vector3){0, 1, 0};
             } 
+        } else { // Z collision if smallest = 2
+            if (new_pos.z > object->position.z) { 
+                result.normal = (Vector3){0, 0, 1};
+            } else {
+                result.normal = (Vector3){0, 0, -1};
+            }
         }
         
-        printf("Normal: %.1f %.1f %.1f\n", result.normal.x, result.normal.y, result.normal.z);
+        //printf("Normal: %.1f %.1f %.1f\n", result.normal.x, result.normal.y, result.normal.z);
 
     
         //printf("Player Y: %.2f - %.2f | Box Y: %.2f - %.2f\n", p_minY, p_maxY, b_minY, b_maxY);

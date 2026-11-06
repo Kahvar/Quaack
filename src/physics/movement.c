@@ -56,9 +56,13 @@ void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt
     } else { // no collision
         player->position.y = newPosition.y;
     }
-
     Vector3 test_pos = {newPosition.x, player->position.y, player->position.z};
     result = CheckNearby(player, map, test_pos);
+    printf("X: hit=%d normal=(%.1f, %.1f, %.1f)\n",
+       result.hit,
+       result.normal.x,
+       result.normal.y,
+       result.normal.z);
     //printf("X hit: %d | OnGround: %d\n", result.hit, player->OnGround);
     if (!result.hit || !result.normal.x) {
         player->position.x = test_pos.x;
@@ -68,6 +72,12 @@ void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt
 
     test_pos = (Vector3){player->position.x, player->position.y, newPosition.z};
     result = CheckNearby(player, map, test_pos);
+
+    printf("X: hit=%d normal=(%.1f, %.1f, %.1f)\n",
+       result.hit,
+       result.normal.x,
+       result.normal.y,
+       result.normal.z);
     //printf("Z hit: %d | OnGround: %d\n", result.hit, player->OnGround);
     if (!result.hit || !result.normal.z) {
         player->position.z = test_pos.z;
