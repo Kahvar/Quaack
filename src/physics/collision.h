@@ -10,7 +10,14 @@ typedef struct CollisionResult {
     bool hit;
     bool landed;
     bool grounded;
+    bool blockedX;
+    bool blockedZ;
+    bool blockedY;
+    bool hitCeiling;
+    bool hitFloor;
+
     float groundHeight;
+    float ceilingHeight;
     Vector3 normal;
     float distance;
 } CollisionResult;

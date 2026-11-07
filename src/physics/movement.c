@@ -51,35 +51,28 @@ void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt
         player->position.y = result.groundHeight;
         player->OnGround = true;
     }
-    else if (result.hit && result.normal.y < 0) { // Hit the underside
+    else if (result.hit && result.blockedY && result.hitCeiling) { // Hit the underside
         player->velocity.y = 0.0f;
+        player->position.y = result.ceilingHeight - player->playerSize.y;
     } else { // no collision
         player->position.y = newPosition.y;
     }
+
+    // x collision
     Vector3 test_pos = {newPosition.x, player->position.y, player->position.z};
     result = CheckNearby(player, map, test_pos);
-    printf("X: hit=%d normal=(%.1f, %.1f, %.1f)\n",
-       result.hit,
-       result.normal.x,
-       result.normal.y,
-       result.normal.z);
-    //printf("X hit: %d | OnGround: %d\n", result.hit, player->OnGround);
-    if (!result.hit || !result.normal.x) {
+
+    if (!result.blockedX) {
         player->position.x = test_pos.x;
     } else {
         player->velocity.x = 0.0f;
     }
 
+    // Z collision
     test_pos = (Vector3){player->position.x, player->position.y, newPosition.z};
     result = CheckNearby(player, map, test_pos);
 
-    printf("X: hit=%d normal=(%.1f, %.1f, %.1f)\n",
-       result.hit,
-       result.normal.x,
-       result.normal.y,
-       result.normal.z);
-    //printf("Z hit: %d | OnGround: %d\n", result.hit, player->OnGround);
-    if (!result.hit || !result.normal.z) {
+    if (!result.blockedZ) {
         player->position.z = test_pos.z;
     } else {
         player->velocity.z = 0.0f;
@@ -215,6 +208,7 @@ void Friction(Player *player, PlayerInput input, float dt) {
 
 void Jump(Player *player, float dt) {
     if(player->canJump) {
+        player->canJump = false;
         player->OnGround = false;
         player->velocity.y = player->jumpForce;
     }
