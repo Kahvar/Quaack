@@ -21,6 +21,10 @@ void AirMovement(Player *player, Vector3 wishDir, float dt);
 
 bool GroundCheck(Player *player);
 
-void Jump(Player *player, float dt);
+void Jump(Player *player);
+
+void UpdateCrouch(Player *player, bool crouchInput, Map *map);
+
+void Crouch(Player *player);
 
 #endif

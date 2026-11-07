@@ -10,6 +10,9 @@ typedef struct {
     Vector3 velocity;
     float eyeHeight;
     bool OnGround;
+    bool crouching;
+    float standingHeight;
+    float crouchHeight;
     float acceleration;
     float airAcceleration;
     float wishSpeed;
@@ -21,6 +24,7 @@ typedef struct {
     float speed;
     bool canJump;
     float maxGroundSpeed;
+    float crouchSpeed;
 } Player;
 
 Player InitPlayer();

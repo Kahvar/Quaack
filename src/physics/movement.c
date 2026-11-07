@@ -20,7 +20,11 @@ void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt
     Gravity(player, dt);
 
     if (input.jump) {
-        Jump(player, dt);
+        Jump(player);
+    }
+
+    if(input.crouch) {
+        
     }
 
     // friction after jump
@@ -115,22 +119,34 @@ void GroundMovement(Player *player, Vector3 wishDir, float dt) {
     float currentspeed = Vector3DotProduct(player->velocity, wishDir);
 
     // how much more speed the player can add before the cap is reached
-    float remainingSpeed = player->maxGroundSpeed - currentspeed;
+    float speedCap = player->crouching
+        ? player->crouchSpeed
+        : player->maxGroundSpeed;
+
+    float remainingSpeed = speedCap - currentspeed;
 
     // if the cap is reached return
     if (remainingSpeed <= 0) {
         return;
     }
 
-    // calculate this frames acceleration
-    float speedToAddThisFrame = player->acceleration * player->maxGroundSpeed * dt;
-    if (speedToAddThisFrame > remainingSpeed) {
-        speedToAddThisFrame = remainingSpeed;
+
+    float accelerationSpeed;
+
+    if (player->crouching) {
+        accelerationSpeed = player->crouchSpeed;
+    } else {
+        accelerationSpeed = player->maxGroundSpeed;
     }
 
+    float speedToAdd = player->acceleration * accelerationSpeed * dt;
 
-    player->velocity.x += speedToAddThisFrame * wishDir.x;
-    player->velocity.z += speedToAddThisFrame * wishDir.z;
+    if (speedToAdd > remainingSpeed) {
+        speedToAdd = remainingSpeed;
+    }
+
+    player->velocity.x += speedToAdd * wishDir.x;
+    player->velocity.z += speedToAdd * wishDir.z;
 }
 
 void AirMovement(Player *player, Vector3 wishDir, float dt) {
@@ -206,7 +222,7 @@ void Friction(Player *player, PlayerInput input, float dt) {
 
 
 
-void Jump(Player *player, float dt) {
+void Jump(Player *player) {
     if(player->canJump) {
         player->canJump = false;
         player->OnGround = false;
@@ -214,4 +230,25 @@ void Jump(Player *player, float dt) {
     }
 }
 
-//
+void UpdateCrouch(Player *player, bool crouchInput, Map *map)  {
+    if(crouchInput){
+        if(!player->crouching) {
+            Crouch(player);
+        }
+    } else {
+        if (player->crouching) {
+            Vector3 testSize = player->playerSize;
+            testSize.y = player->standingHeight;
+
+            CollisionResult result = CheckNearby(player, map, testSize);
+
+        }
+        
+    }
+}
+
+void Crouch(Player *player) {
+    player->crouching = true;
+    player->playerSize.y = player->playerSize.y * 0.75f;
+    player->maxGroundSpeed = player->maxGroundSpeed * 0.5f;
+}

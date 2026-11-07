@@ -8,6 +8,7 @@ PlayerInput CheckKeys() {
         .backward = IsKeyDown(KEY_S),
         .left = IsKeyDown(KEY_A),
         .right = IsKeyDown(KEY_D),
-        .jump = IsKeyDown(KEY_SPACE)
+        .jump = IsKeyDown(KEY_SPACE),
+        .crouch = IsKeyDown(KEY_LEFT_SHIFT)
     };
 }

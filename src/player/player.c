@@ -14,5 +14,6 @@ Player InitPlayer() {
     player.stopSpeed = 1.0f;
     player.jumpForce = 7.5f;
     player.maxGroundSpeed = 9.0f;
+    player.crouching = false;
     return player;
 }
