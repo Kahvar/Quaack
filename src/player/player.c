@@ -4,7 +4,6 @@ Player InitPlayer() {
     Player player = {0}; // later init the player position to the maps start point
     player.position.y = 10.0f;
     player.playerSize = (Vector3){1.0f, 3.0f, 1.0f};
-    player.eyeHeight = 2.0f;
     player.acceleration = 8.0f;
     player.airAcceleration = 10.0f;
     player.wishSpeed = 9.0f;
@@ -13,7 +12,14 @@ Player InitPlayer() {
     player.friction = 6.0f;
     player.stopSpeed = 1.0f;
     player.jumpForce = 7.5f;
+
     player.maxGroundSpeed = 9.0f;
+    player.crouchSpeed = 4.5f;
+    player.standSpeed = 9.0f;
+
+    player.crouchHeight = player.playerSize.y / 2;
+    player.standingHeight = player.playerSize.y;
+
     player.crouching = false;
     return player;
 }

@@ -38,7 +38,7 @@ void GameRun(PlayerCamera *camera, Player *player) {
             ClearBackground(RAYWHITE);
             
             // update the camera with current camera and player
-            UpdatePlayerCamera(camera, player);
+            UpdatePlayerCamera(camera, player, dt);
 
             BeginMode3D(camera->raylib_camera);
                 Renderer(&map);

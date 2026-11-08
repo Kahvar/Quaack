@@ -4,7 +4,7 @@
 
 void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt, Map *map) {
     bool onFloor = GroundCheck(player);
-    bool onBox = CheckNearby(player, map, player->position).grounded;
+    bool onBox = CheckNearby(player, map, player->position, player->playerSize).grounded;
 
     // better groundcheck and groundcheck checks worlds floor
     if (onBox || onFloor){
@@ -23,20 +23,18 @@ void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt
         Jump(player);
     }
 
-    if(input.crouch) {
-        
-    }
-
     // friction after jump
     Friction(player, input ,dt);
 
+    // crouch
+    UpdateCrouch(player, input.crouch, map);
 
     if (player->OnGround) {
         GroundMovement(player, wishDir, dt);
     } else {
         AirMovement(player, wishDir, dt);
     }
-    
+
     //calc speed
     player->speed = sqrt((player->velocity.x * player->velocity.x) +
                         (player->velocity.z * player->velocity.z));
@@ -47,7 +45,7 @@ void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt
     newPosition.x += player->velocity.x * dt;
     newPosition.z += player->velocity.z * dt;
 
-    CollisionResult result = CheckNearby(player, map, newPosition);
+    CollisionResult result = CheckNearby(player, map, newPosition, player->playerSize);
     
 
     if (result.landed) { // landing on top
@@ -64,7 +62,7 @@ void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt
 
     // x collision
     Vector3 test_pos = {newPosition.x, player->position.y, player->position.z};
-    result = CheckNearby(player, map, test_pos);
+    result = CheckNearby(player, map, test_pos, player->playerSize);
 
     if (!result.blockedX) {
         player->position.x = test_pos.x;
@@ -74,7 +72,7 @@ void UpdateMovement(Player *player, PlayerInput input, Vector3 wishDir, float dt
 
     // Z collision
     test_pos = (Vector3){player->position.x, player->position.y, newPosition.z};
-    result = CheckNearby(player, map, test_pos);
+    result = CheckNearby(player, map, test_pos, player->playerSize);
 
     if (!result.blockedZ) {
         player->position.z = test_pos.z;
@@ -240,15 +238,22 @@ void UpdateCrouch(Player *player, bool crouchInput, Map *map)  {
             Vector3 testSize = player->playerSize;
             testSize.y = player->standingHeight;
 
-            CollisionResult result = CheckNearby(player, map, testSize);
+            CollisionResult result = CheckNearby(player, map, player->position, testSize);
+
+            if(result.hit) {
+                player->crouching = true;
+            } else {
+                player->crouching = false;
+                player->playerSize.y = player->standingHeight;
+                player->maxGroundSpeed = player->standSpeed;
+            }
 
         }
-        
     }
 }
 
 void Crouch(Player *player) {
     player->crouching = true;
-    player->playerSize.y = player->playerSize.y * 0.75f;
-    player->maxGroundSpeed = player->maxGroundSpeed * 0.5f;
+    player->playerSize.y = player->crouchHeight;
+    player->maxGroundSpeed = player->crouchSpeed;
 }

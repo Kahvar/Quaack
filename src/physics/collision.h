@@ -24,9 +24,9 @@ typedef struct CollisionResult {
 
 
 
-CollisionResult CheckNearby(Player *player, Map *map, Vector3 new_pos);
+CollisionResult CheckNearby(Player *player, Map *map, Vector3 new_pos, Vector3 pSize);
 
-CollisionResult CheckAABB(Player *player, MapObject *object, Vector3 new_pos);
+CollisionResult CheckAABB(Player *player, MapObject *object, Vector3 new_pos, Vector3 pSize);
 
 
 #endif

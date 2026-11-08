@@ -8,12 +8,13 @@ typedef struct Camera {
     float yaw;
     float pitch;
     float sensitivity;
+    float currentEyeHeight;
 } PlayerCamera; // name goes after closing
 
 
-PlayerCamera InitCamera(void); // return type my PlayerCamera struct
+PlayerCamera InitCamera(Player *player); // return type my PlayerCamera struct
 
-void UpdatePlayerCamera(PlayerCamera *camera, Player *player); // update the camera with PlayerCamera struct
+void UpdatePlayerCamera(PlayerCamera *camera, Player *player, float dt); // update the camera with PlayerCamera struct
 
 
 #endif

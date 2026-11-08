@@ -1,14 +1,14 @@
 #include <collision.h>
 #include <math.h>
 #include <stdio.h>
-CollisionResult CheckNearby(Player *player, Map *map, Vector3 new_pos) {
+CollisionResult CheckNearby(Player *player, Map *map, Vector3 new_pos, Vector3 pSize) {
     CollisionResult result = { 0 };
 
     // later make the seperate the map objects into a 2d grid to check them faster now its fine because the map is small
     for (size_t i = 0; i < map->count; i++) {
         MapObject *object = &map->objects[i];
 
-        CollisionResult current = CheckAABB(player, object, new_pos);
+        CollisionResult current = CheckAABB(player, object, new_pos, pSize);
 
         if (current.hit && current.normal.x != 0) {
             result.blockedX = true;
@@ -48,22 +48,20 @@ CollisionResult CheckNearby(Player *player, Map *map, Vector3 new_pos) {
         } else if (current.hit && current.normal.y > 0){
             result.hitFloor = true;
         }
-        
-        
 
     }
     return result;
 }
 
-CollisionResult CheckAABB(Player *player, MapObject *object, Vector3 new_pos) {
+CollisionResult CheckAABB(Player *player, MapObject *object, Vector3 new_pos, Vector3 pSize) {
     CollisionResult result = { 0 };
 
-    float p_minX = new_pos.x - player->playerSize.x / 2;
-    float p_maxX = new_pos.x + player->playerSize.x / 2;
+    float p_minX = new_pos.x - pSize.x / 2;
+    float p_maxX = new_pos.x + pSize.x / 2;
     float p_minY = new_pos.y;                          // use position.y because its players feet
-    float p_maxY = new_pos.y + player->playerSize.y;
-    float p_minZ = new_pos.z - player->playerSize.z / 2;
-    float p_maxZ = new_pos.z + player->playerSize.z / 2;
+    float p_maxY = new_pos.y + pSize.y;
+    float p_minZ = new_pos.z - pSize.z / 2;
+    float p_maxZ = new_pos.z + pSize.z / 2;
 
     float b_minX = object->position.x - object->size.x / 2;
     float b_maxX = object->position.x + object->size.x / 2;
@@ -76,11 +74,9 @@ CollisionResult CheckAABB(Player *player, MapObject *object, Vector3 new_pos) {
     bool collisionY = (p_minY < b_maxY) && (p_maxY >= b_minY);
     bool collisionZ = (p_minZ <= b_maxZ) && (p_maxZ >= b_minZ);
 
-    float playerCenterY = new_pos.y + player->playerSize.y / 2;
-
     result.groundHeight = b_maxY;
     result.ceilingHeight = b_minY;
-    bool hitCeiling = collisionX && collisionZ && player->position.y + player->playerSize.y <= b_minY && new_pos.y + player->playerSize.y > b_minY && player->velocity.y > 0.0f;
+    bool hitCeiling = collisionX && collisionZ && player->position.y + pSize.y <= b_minY && new_pos.y + pSize.y > b_minY && player->velocity.y > 0.0f;
 
     // if hitCeiling is true return early
     if (hitCeiling) {
