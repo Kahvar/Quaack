@@ -11,6 +11,7 @@ typedef struct PlayerInput {
     bool right;
     bool jump;
     bool crouch;
+    bool shoot;
 } PlayerInput;
 
 PlayerInput CheckKeys();

@@ -24,6 +24,7 @@ add_executable(${PROJECT_NAME}
     src/map/map.c
     src/map/map_loader.c
     src/rendering/renderer.c
+    src/viewmodel/viewmodel.c
     
 )
 
@@ -34,6 +35,7 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     src/physics
     src/player
     src/map
+    src/viewmodel
 )
 
 

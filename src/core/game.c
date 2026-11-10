@@ -7,6 +7,7 @@
 #include <map/map.h>
 #include <map/map_loader.h>
 #include <rendering/renderer.h>
+#include <viewmodel/viewmodel.h>
 
 // run the game with player and camera parameters
 void GameRun(PlayerCamera *camera, Player *player) {
@@ -15,6 +16,15 @@ void GameRun(PlayerCamera *camera, Player *player) {
     char name[50] = "src/assets/test.map";
     // init the map
     Map map = MapInit();
+
+    // Init viewmodel
+    Viewmodel viewModel = ViewmodelInit();
+
+    printf("Loaded: %d animations\n", viewModel.animCount);
+
+    for (int i = 0; i < viewModel.animCount; i++){
+        printf("anim name: %s \n", viewModel.animations[i].name);
+    }
 
     // if the map loader returns false
     if (!MapLoader(name, &map)) {
@@ -34,6 +44,10 @@ void GameRun(PlayerCamera *camera, Player *player) {
 
         UpdateMovement(player, input, wishDir, dt, &map);
 
+        if(input.shoot) {
+            ViewmodelShoot(&viewModel);
+        }
+
         BeginDrawing();
             ClearBackground(RAYWHITE);
             
@@ -41,7 +55,9 @@ void GameRun(PlayerCamera *camera, Player *player) {
             UpdatePlayerCamera(camera, player, dt);
 
             BeginMode3D(camera->raylib_camera);
-                Renderer(&map);
+                ViewmodelUpdate(&viewModel, dt);
+
+                Renderer(&map, &viewModel);
 
                 DrawGrid(10, 1.0f);
                 
@@ -59,10 +75,11 @@ void GameRun(PlayerCamera *camera, Player *player) {
         return;
     }
 
-    GameClose();
+    GameClose(viewModel);
 }
 
-void GameClose() {
+void GameClose(Viewmodel viewmodel) {
+    ViewmodelUnload(&viewmodel);
     CloseWindow();
 }
 

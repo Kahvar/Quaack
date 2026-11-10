@@ -9,6 +9,7 @@ PlayerInput CheckKeys() {
         .left = IsKeyDown(KEY_A),
         .right = IsKeyDown(KEY_D),
         .jump = IsKeyDown(KEY_SPACE),
-        .crouch = IsKeyDown(KEY_LEFT_SHIFT)
+        .crouch = IsKeyDown(KEY_LEFT_SHIFT),
+        .shoot = IsMouseButtonDown(MOUSE_BUTTON_LEFT),
     };
 }
