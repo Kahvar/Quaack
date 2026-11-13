@@ -15,33 +15,19 @@ Viewmodel ViewmodelInit() {
     return viewmodel;
 };
 
+// simplify viewmodelupdate
 void ViewmodelUpdate(Viewmodel *viewmodel, float dt) {
-    float animSpeed = dt * 34;
+    ModelAnimation anim = viewmodel->animations[viewmodel->animIndex];
+    viewmodel->animFrame += dt * 34.0f; //speed
 
-    //get the total frame count of idle
-    int totalframes_idle = viewmodel->animations[1].keyframeCount;
-
-    //get total fram count of hit
-    int totalframes_hit = viewmodel->animations[0].keyframeCount;
-
-
-    if(viewmodel->animIndex == 1) {
-        viewmodel->animFrame += animSpeed;
-        if (viewmodel->animFrame < totalframes_idle) {
-            UpdateModelAnimation(viewmodel->model, viewmodel->animations[1], (int)viewmodel->animFrame); // display the frame using int
-        } else {
-            viewmodel->animFrame = 0;
-            UpdateModelAnimation(viewmodel->model, viewmodel->animations[1], (int)viewmodel->animFrame);
-        }
-    } else {
-        viewmodel->animFrame += animSpeed;
-        if(viewmodel->animFrame < totalframes_hit) {
-            UpdateModelAnimation(viewmodel->model, viewmodel->animations[0], (int)viewmodel->animFrame);
-        } else {
-            viewmodel->animFrame = 0;
-            viewmodel->animIndex = 1; // go back to idle
+    if (viewmodel->animFrame >= anim.keyframeCount) {
+        viewmodel->animFrame = 0;
+        if (viewmodel->animIndex == 0) {          // shoot finished, back to idle
+            viewmodel->animIndex = 1;
+            anim = viewmodel->animations[1];
         }
     }
+    UpdateModelAnimation(viewmodel->model, anim, (int)viewmodel->animFrame);
 }
 
 void ViewmodelShoot(Viewmodel *viewmodel) {
