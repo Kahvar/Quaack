@@ -1,6 +1,7 @@
 #include <renderer.h>
-#include <stddef.h>
-
+#include "rlgl.h"
+#include <GL/gl.h>
+#include <stdio.h>
 
 // here comes other drawing too
 void Renderer(Map *map, Viewmodel *viewmodel) {
@@ -8,7 +9,6 @@ void Renderer(Map *map, Viewmodel *viewmodel) {
         return;
     }
     RenderMap(map);
-    RenderViewmodel(viewmodel);
 }
 
 void RenderMap(Map *map) {
@@ -21,6 +21,25 @@ void RenderMap(Map *map) {
 
 
 void RenderViewmodel(Viewmodel *viewmodel) {
-    //draw the hands model from viewmodel
-    DrawModel(viewmodel->model, (Vector3){10.0f, 1.0f, 3.0f}, 0.5f, GRAY);
+    //draw the viewmodel with different camera
+    Camera3D cam = {0};
+    cam.position = (Vector3){0.0f, 0.0f, 0.0f};
+    cam.target = (Vector3){0.0f, 0.0f, -1.0f};
+    cam.up = (Vector3){0.0f, 1.0f, 0.0f};
+    cam.fovy = 60.0f; // viewmodel fov
+    cam.projection = CAMERA_PERSPECTIVE;
+
+    // flush world
+    rlDrawRenderBatchActive();
+    glClear(GL_DEPTH_BUFFER_BIT); // wipe depth
+
+    BeginMode3D(cam);
+        Vector3 offset = {-0.2f, -0.3f, -0.3f};
+        DrawModelEx(viewmodel->model,
+                    offset,
+                    (Vector3){0, 1, 0}, 90.0f,
+                    (Vector3){0.07f, 0.08f, 0.07f},
+                    RED);
+    
+    EndMode3D();
 }

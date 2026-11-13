@@ -48,7 +48,6 @@ CollisionResult CheckNearby(Player *player, Map *map, Vector3 new_pos, Vector3 p
         } else if (current.hit && current.normal.y > 0){
             result.hitFloor = true;
         }
-
     }
     return result;
 }

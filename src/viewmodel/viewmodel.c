@@ -18,7 +18,7 @@ Viewmodel ViewmodelInit() {
 // simplify viewmodelupdate
 void ViewmodelUpdate(Viewmodel *viewmodel, float dt) {
     ModelAnimation anim = viewmodel->animations[viewmodel->animIndex];
-    viewmodel->animFrame += dt * 34.0f; //speed
+    viewmodel->animFrame += dt * 50.0f; //speed
 
     if (viewmodel->animFrame >= anim.keyframeCount) {
         viewmodel->animFrame = 0;

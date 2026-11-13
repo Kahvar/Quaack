@@ -1,16 +1,23 @@
 cmake_minimum_required(VERSION 3.15)
-
 project(Game LANGUAGES C)
 
 set(CMAKE_C_STANDARD 11)
 set(CMAKE_C_STANDARD_REQUIRED ON)
 
-
-if(WIN32)
-    set(RAYLIB_DIR "C:/raylib/raylib")
+find_package(raylib 5.0 QUIET)
+if(NOT raylib_FOUND)
+    include(FetchContent)
+    set(BUILD_EXAMPLES OFF CACHE BOOL "" FORCE)
+    FetchContent_Declare(
+        raylib
+        GIT_REPOSITORY https://github.com/raysan5/raylib.git
+        GIT_TAG 6.2
+        GIT_SHALLOW TRUE
+    )
+    FetchContent_MakeAvailable(raylib)
 endif()
 
-
+find_package(OpenGL REQUIRED)
 
 add_executable(${PROJECT_NAME}
     src/main.c
@@ -25,7 +32,7 @@ add_executable(${PROJECT_NAME}
     src/map/map_loader.c
     src/rendering/renderer.c
     src/viewmodel/viewmodel.c
-    
+    src/viewmodel/gl_utils.c
 )
 
 target_include_directories(${PROJECT_NAME} PRIVATE
@@ -38,26 +45,8 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     src/viewmodel
 )
 
+target_link_libraries(${PROJECT_NAME} PRIVATE raylib OpenGL::GL)
 
-if(WIN32)
-    target_include_directories(${PROJECT_NAME} PRIVATE "${RAYLIB_DIR}/src")
-    target_link_directories(${PROJECT_NAME} PRIVATE "${RAYLIB_DIR}/src")
-
-    target_link_libraries(${PROJECT_NAME} PRIVATE
-    raylib
-    winmm
-    gdi32
-    opengl32
-    )
-else()
-    target_link_directories(${PROJECT_NAME} PRIVATE /usr/local/lib)
-
-    target_link_libraries(${PROJECT_NAME} PRIVATE
-        raylib
-        m
-        pthread
-        dl
-        rt
-        X11
-    )
+if(NOT WIN32)
+    target_link_libraries(${PROJECT_NAME} PRIVATE m)
 endif()

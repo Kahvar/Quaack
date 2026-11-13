@@ -47,6 +47,7 @@ void GameRun(PlayerCamera *camera, Player *player) {
         if(input.shoot) {
             ViewmodelShoot(&viewModel);
         }
+        ViewmodelUpdate(&viewModel, dt);
 
         BeginDrawing();
             ClearBackground(RAYWHITE);
@@ -55,13 +56,14 @@ void GameRun(PlayerCamera *camera, Player *player) {
             UpdatePlayerCamera(camera, player, dt);
 
             BeginMode3D(camera->raylib_camera);
-                ViewmodelUpdate(&viewModel, dt);
 
                 Renderer(&map, &viewModel);
 
                 DrawGrid(10, 1.0f);
                 
             EndMode3D();
+
+            RenderViewmodel(&viewModel);
 
             DrawText(TextFormat("Player position: x: %.2f y: %.2f z: %.2f", player->position.x, player->position.y, player->position.z), 10, 30, 20, RED);
             DrawText(TextFormat("Player speed: %.2f", player->speed), 10, 50, 20, RED);
